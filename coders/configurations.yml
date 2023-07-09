@@ -1,0 +1,6 @@
+project_id: aihackaton230707
+model_id: codechat-bison@001
+location: us-central1
+parameters:
+  temperature: 0.2
+  max_output_tokens: 1024
