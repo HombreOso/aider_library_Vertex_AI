@@ -391,6 +391,8 @@ class Coder:
         if self.repo_map:
             repo_content = self.repo_map.get_repo_map(self.abs_fnames, other_files)
             print("repo_content: ", repo_content)
+            print("self.abs_fnames: ", self.abs_fnames)
+            print("other_files: ", other_files)
             if repo_content:
                 if all_content:
                     all_content += "\n"
@@ -492,9 +494,19 @@ class Coder:
     def send_new_user_message(self, inp):
         self.choose_fence()
 
-        self.cur_messages += [
+
+        # -----------------------------------------------
+        ## plus (+) deleted
+
+        # self.cur_messages += [
+        #     dict(role="user", content=inp),
+        # ]
+
+        self.cur_messages = [
             dict(role="user", content=inp),
         ]
+        # -----------------------------------------------
+
 
         main_sys = self.gpt_prompts.main_system
         # if self.main_model.max_context_tokens > 4 * 1024:
@@ -655,7 +667,11 @@ class Coder:
 
         model_vertex = ChatModel(project_id, model_id, location)
         model_vertex.initialize()
-        response = model_vertex.send_message(" ".join([message["content"] for message in messages]), **parameters)
+        final_message = " ".join([message["content"] for message in messages])
+        response = model_vertex.send_message(final_message, **parameters)
+
+        print("final message", final_message)
+
         print(response)
 
         # ---------------------------------------------

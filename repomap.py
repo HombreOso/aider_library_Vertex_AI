@@ -181,7 +181,7 @@ class RepoMap:
         # --------------------------------------------
         if self.verbose:
             self.io.tool_output(f"simple map: {num_tokens/1024:.1f} k-tokens")
-        if num_tokens < self.max_map_tokens:
+        if num_tokens <= self.max_map_tokens:
             return files_listing, ctags_msg
 
     def get_simple_files_map(self, other_files):
