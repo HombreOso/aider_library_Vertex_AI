@@ -266,7 +266,9 @@ class Coder:
                 repo_path = git.Repo(fname, search_parent_directories=True).working_dir
                 repo_path = utils.safe_abs_path(repo_path)
                 repo_paths.append(repo_path)
+                print("repo_paths", repo_paths)
             except git.exc.InvalidGitRepositoryError:
+                print("InvalidGitRepositoryError")
                 pass
 
             if fname.is_dir():
@@ -286,6 +288,7 @@ class Coder:
         self.repo = git.Repo(repo_paths.pop(), odbt=git.GitDB)
 
         self.root = utils.safe_abs_path(self.repo.working_tree_dir)
+        print("self.repo.working_tree_dir: ", self.repo.working_tree_dir)
 
         new_files = []
         for fname in self.abs_fnames:
@@ -387,6 +390,7 @@ class Coder:
         other_files = set(self.get_all_abs_files()) - set(self.abs_fnames)
         if self.repo_map:
             repo_content = self.repo_map.get_repo_map(self.abs_fnames, other_files)
+            print("repo_content: ", repo_content)
             if repo_content:
                 if all_content:
                     all_content += "\n"
