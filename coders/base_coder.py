@@ -31,8 +31,6 @@ from ..dump import dump  # noqa: F401
 import vertexai
 from vertexai.preview.language_models import CodeChatModel
 import yaml
-
-import processor
 # ------------------------------------------
 
 # ------------------------------------------
@@ -53,7 +51,8 @@ class ChatModel:
     def send_message(self, message, **parameters):
         chat = self.initialize().start_chat()
         response = chat.send_message(message, **parameters)
-        return response.text
+        # print(dir(response))
+        return response
 # ------------------------------------------
 
 class MissingAPIKeyError(ValueError):
@@ -268,9 +267,9 @@ class Coder:
                 repo_path = git.Repo(fname, search_parent_directories=True).working_dir
                 repo_path = utils.safe_abs_path(repo_path)
                 repo_paths.append(repo_path)
-                print("repo_paths", repo_paths)
+                # print("repo_paths", repo_paths)
             except git.exc.InvalidGitRepositoryError:
-                print("InvalidGitRepositoryError")
+                # print("InvalidGitRepositoryError")
                 pass
 
             if fname.is_dir():
@@ -290,7 +289,7 @@ class Coder:
         self.repo = git.Repo(repo_paths.pop(), odbt=git.GitDB)
 
         self.root = utils.safe_abs_path(self.repo.working_tree_dir)
-        print("self.repo.working_tree_dir: ", self.repo.working_tree_dir)
+        # print("self.repo.working_tree_dir: ", self.repo.working_tree_dir)
 
         new_files = []
         for fname in self.abs_fnames:
@@ -392,9 +391,9 @@ class Coder:
         other_files = set(self.get_all_abs_files()) - set(self.abs_fnames)
         if self.repo_map:
             repo_content = self.repo_map.get_repo_map(self.abs_fnames, other_files)
-            print("repo_content: ", repo_content)
-            print("self.abs_fnames: ", self.abs_fnames)
-            print("other_files: ", other_files)
+            # print("repo_content: ", repo_content)
+            # print("self.abs_fnames: ", self.abs_fnames)
+            # print("other_files: ", other_files)
             if repo_content:
                 if all_content:
                     all_content += "\n"
@@ -667,16 +666,14 @@ class Coder:
 
         parameters = {"temperature": 0.2, "max_output_tokens": 1024}
 
-        # model_vertex = ChatModel(project_id, model_id, location)
-        # model_vertex.initialize()
+        model_vertex = ChatModel(project_id, model_id, location)
+        model_vertex.initialize()
         final_message = " ".join([message["content"] for message in messages])
-        # response = model_vertex.send_message(final_message, **parameters)
+        response = model_vertex.send_message(final_message, **parameters)
 
-        response = processor.process_request(final_message)
+        # print("final message", final_message)
 
-        print("final message", final_message)
-
-        print(response)
+        # print(response.text)
 
         # ---------------------------------------------
 
@@ -767,7 +764,7 @@ class Coder:
 
             # ------------------------------------------
             # Vertex AI has different response object structure: dummy value
-            self.partial_response_content = "0"
+            self.partial_response_content = completion.text
             # ------------------------------------------
 
         resp_hash = dict(
@@ -816,6 +813,9 @@ class Coder:
         self.io.console.print(tokens)
 
     def show_send_output_stream(self, completion, silent):
+        self.partial_response_content = completion.text
+
+
         live = None
         if self.pretty and not silent:
             live = Live(vertical_overflow="scroll")
@@ -827,7 +827,7 @@ class Coder:
             for chunk in completion:
 
                 # ----------------------------------------------
-                ## commented out because Vertex AI has diffrent response object structure
+                ## commented out because Vertex AI has different response object structure
                 
                 # if chunk.choices[0].finish_reason == "length":
                 #     raise ExhaustedContextWindow()
@@ -874,6 +874,7 @@ class Coder:
                 else:
                     sys.stdout.write(text)
                     sys.stdout.flush()
+        except: pass
         finally:
             if live:
                 self.live_incremental_response(live, True)

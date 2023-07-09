@@ -28,6 +28,7 @@ class EditBlockCoder(Coder):
                 continue
             content = self.io.read_text(full_path)
             content = do_replace(full_path, content, original, updated)
+            print("content ", content)
             if content:
                 self.io.write_text(full_path, content)
                 edited.add(path)
@@ -326,11 +327,7 @@ Here's the change:
 
 ```text
 foo.txt
-<<<<<<< ORIGINAL
-Two
-=======
 Tooooo
->>>>>>> UPDATED
 ```
 
 Hope you like it!
