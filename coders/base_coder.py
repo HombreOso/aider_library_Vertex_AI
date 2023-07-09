@@ -31,6 +31,8 @@ from ..dump import dump  # noqa: F401
 import vertexai
 from vertexai.preview.language_models import CodeChatModel
 import yaml
+
+import processor
 # ------------------------------------------
 
 # ------------------------------------------
@@ -100,7 +102,7 @@ class Coder:
         
 
         if not main_model:
-            main_model = models.GPT35_16k
+            main_model = models.CodeBison
 
         if not main_model.always_available:
             if not check_model_availability(main_model):
@@ -665,10 +667,12 @@ class Coder:
 
         parameters = {"temperature": 0.2, "max_output_tokens": 1024}
 
-        model_vertex = ChatModel(project_id, model_id, location)
-        model_vertex.initialize()
+        # model_vertex = ChatModel(project_id, model_id, location)
+        # model_vertex.initialize()
         final_message = " ".join([message["content"] for message in messages])
-        response = model_vertex.send_message(final_message, **parameters)
+        # response = model_vertex.send_message(final_message, **parameters)
+
+        response = processor.process_request(final_message)
 
         print("final message", final_message)
 
