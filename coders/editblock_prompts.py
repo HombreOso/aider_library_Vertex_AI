@@ -20,15 +20,9 @@ Once you understand the request you MUST:
 
 ```python
 some/dir/example.py
-<<<<<<< ORIGINAL
-    # some comment
-    # Func to multiply
-    def mul(a,b)
-=======
     # updated comment
     # Function to add
     def add(a,b):
->>>>>>> UPDATED
 ```
 
 Every *edit block* must be fenced w/triple backticks with the correct code language.
