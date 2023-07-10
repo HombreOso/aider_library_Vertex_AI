@@ -33,6 +33,9 @@ from vertexai.preview.language_models import CodeChatModel
 import yaml
 # ------------------------------------------
 
+
+
+file_to_modify_split_str = "@@@"
 # ------------------------------------------
 # ChatModel Vertex AI
 class ChatModel:
@@ -669,6 +672,7 @@ class Coder:
         model_vertex = ChatModel(project_id, model_id, location)
         model_vertex.initialize()
         final_message = " ".join([message["content"] for message in messages])
+
         response = model_vertex.send_message(final_message, **parameters)
 
         # print("final message", final_message)
@@ -1062,7 +1066,7 @@ class Coder:
 
     def allowed_to_edit(self, path, write_content=None):
         full_path = self.abs_root_path(path)
-
+        print("abs_filenames", self.abs_fnames)
         if full_path in self.abs_fnames:
             if write_content:
                 self.io.write_text(full_path, write_content)

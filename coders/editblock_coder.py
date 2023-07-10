@@ -15,11 +15,16 @@ class EditBlockCoder(Coder):
     def update_cur_messages(self, content, edited):
         self.cur_messages += [dict(role="assistant", content=content)]
 
+    def get_inchat_relative_files(self):
+        files = [self.get_rel_fname(fname) for fname in self.abs_fnames]
+        return sorted(set(files))
+
     def update_files(self):
         content = self.partial_response_content
 
         # might raise ValueError for malformed ORIG/UPD blocks
         edits = list(find_original_update_blocks(content))
+        print("edits: ", edits)
 
         edited = set()
         for path, original, updated in edits:
