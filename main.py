@@ -261,6 +261,7 @@ def main(args=None, input=None, output=None):
     )
 
     if not git_root and args.git:
+        ## ASK
         if io.confirm_ask("No git repo found, create one to track GPT's changes (recommended)?"):
             repo = git.Repo.init(os.getcwd())
             with repo.config_writer() as git_config:

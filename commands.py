@@ -262,6 +262,7 @@ class Commands:
                 else:
                     if Path(word).exists():
                         matched_files = [word]
+                    ## ASK
                     elif self.io.confirm_ask(
                         f"No files matched '{word}'. Do you want to create the file?"
                     ):

@@ -308,6 +308,7 @@ class Coder:
             self.io.tool_output(f"Files not tracked in {rel_repo_dir}:")
             for fn in new_files:
                 self.io.tool_output(f" - {fn}")
+            ## ASK
             if self.io.confirm_ask("Add them?"):
                 for relative_fname in new_files:
                     self.repo.git.add(relative_fname)
@@ -461,6 +462,7 @@ class Coder:
         self.cur_messages = []
 
     def run_loop(self):
+        ## INPUT
         inp = self.io.get_input(
             self.root,
             self.get_inchat_relative_files(),
@@ -637,7 +639,7 @@ class Coder:
 
         for rel_fname in mentioned_rel_fnames:
             self.io.tool_output(rel_fname)
-
+        ## ASK
         if not self.io.confirm_ask("Add these files to the chat?"):
             return
 
@@ -736,11 +738,14 @@ class Coder:
 
         if not silent:
             if self.partial_response_content:
+
+                ## OUTPUT
                 self.io.ai_output(self.partial_response_content)
             elif self.partial_response_function_call:
                 # TODO: push this into subclasses
                 args = self.parse_partial_args()
                 if args:
+                    ## OUTPUT
                     self.io.ai_output(json.dumps(args, indent=4))
 
         return interrupted
@@ -1011,7 +1016,7 @@ class Coder:
                 self.io.tool_output("Git repo has uncommitted changes.")
             else:
                 self.io.tool_output("Files have uncommitted changes.")
-
+            ## PROMPT with return value
             res = self.io.prompt_ask(
                 "Commit before the chat proceeds [y/n/commit message]?",
                 default=commit_message,
@@ -1076,6 +1081,7 @@ class Coder:
             question = f"Allow creation of new file {path}?"  # noqa: E501
         else:
             question = f"Allow edits to {path} which was not previously provided?"  # noqa: E501
+        ## ASK
         if not self.io.confirm_ask(question):
             self.io.tool_error(f"Skipping edit to {path}")
             return
@@ -1090,6 +1096,7 @@ class Coder:
         if self.repo:
             tracked_files = set(self.get_tracked_files())
             relative_fname = self.get_rel_fname(full_path)
+            ## ASK
             if relative_fname not in tracked_files and self.io.confirm_ask(f"Add {path} to git?"):
                 if not self.dry_run:
                     self.repo.git.add(full_path)
