@@ -68,7 +68,7 @@ class Model:
         # added to implement code-bison
 
         if self.is_codechat_bison():
-            self.edit_format = "diff"
+            self.edit_format = "whole"
             self.use_repo_map = True
             self.send_undo_reply = True
 
